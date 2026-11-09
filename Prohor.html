@@ -1,0 +1,383 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ТехнолоджиЕГЭ · тренажёр</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@4/latin-700.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:0;background:#051006;color:#c8ffe0;font-family:'Segoe UI',Arial,sans-serif;overflow-x:hidden}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#bg .star{position:absolute;background:#fff;border-radius:50%;opacity:.5;animation:tw 3s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:.8}}
+.bubble{position:absolute;border-radius:50%;opacity:.18;animation:up linear infinite}
+@keyframes up{0%{transform:translateY(110vh);opacity:0}10%{opacity:.18}100%{transform:translateY(-10vh);opacity:0}}
+@keyframes drop{0%{transform:translateY(-20%);opacity:0}5%{opacity:1}100%{transform:translateY(120vh);opacity:.4}}
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.logo{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#00ff9d,#00d4ff);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#03140b;font-family:Consolas,monospace;animation:pulse 2.4s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(47,111,237,.35)}50%{box-shadow:0 0 0 14px rgba(47,111,237,0)}}
+h1{margin:0;font-size:22px}
+h1 small{display:block;font-size:11px;color:#58a97a;letter-spacing:2px}
+.sub{color:#58a97a;font-size:13px;margin-bottom:10px}
+.profile{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#0a1f10;border:1px solid #1d4a2c;padding:10px 14px;border-radius:14px;margin-bottom:12px;font-size:13px}
+.profile .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00ff9d,#00d4ff);color:#03140b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.profile .who{font-weight:700;font-size:15px}
+.profile .scores{display:flex;gap:14px;margin-left:auto}
+.profile .scores b{display:block;font-size:16px}
+.profile .scores span{font-size:11px;color:#58a97a}
+.online{font-size:12px;padding:4px 10px;border-radius:999px;background:#0e2b18;border:1px solid #1d4a2c}
+.online.g{color:#7ddb9b}.online.r{color:#ff8b8b}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:900px){.grid{grid-template-columns:1fr 320px}}
+.card{background:#0a1f10;border:1px solid #1d4a2c;border-radius:16px;padding:14px}
+.card h2{margin:0 0 8px;font-size:15px;color:#58a97a}
+select.task,.chat-head input,.chat-input input,.nick input{width:100%;padding:10px;font-size:13.5px;border-radius:8px;background:#04120a;color:#c8ffe0;border:1px solid #1d4a2c}
+select.task{margin-bottom:8px}
+.def{background:#0e2b18;border-left:4px solid #00ff9d;padding:10px 12px;border-radius:6px;font-size:13px;margin-bottom:10px;white-space:pre-wrap;max-height:160px;overflow-y:auto}
+textarea{width:100%;height:200px;padding:10px;font-family:Consolas,monospace;font-size:13px;border:1px solid #1d4a2c;border-radius:8px;resize:vertical;background:#04120a;color:#c8ffe0}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{border:none;border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;background:#0e2b18;color:#c8ffe0;border:1px solid #1d4a2c}
+.btn.primary{background:linear-gradient(135deg,#00ff9d,#00d4ff);color:#03140b;font-weight:700;border:none}
+.btn.green{background:#27a05b;color:#fff;border:none}
+pre.out{background:#000;color:#8ff;padding:10px;border-radius:8px;font-size:13px;white-space:pre-wrap;min-height:24px;margin-top:10px;display:none}
+pre.out.err{color:#ff9c9c}
+.result{margin-top:8px;font-size:13px}.ok{color:#6fdb9b}.bad{color:#ff8b8b}
+.info{font-size:12px;color:#58a97a;margin-top:12px}
+.chat{display:flex;flex-direction:column;height:560px}
+.msgs{flex:1;overflow-y:auto;background:#04120a;border:1px solid #1d4a2c;border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+.msg{background:#0e2b18;border-radius:8px;padding:6px 9px;align-self:flex-start;max-width:85%}
+.msg .who{font-weight:700;color:#00ff9d;font-size:11px}
+.msg.mine{background:#0c3520;align-self:flex-end}
+.msg.mine .who{color:#00d4ff}
+.sys{color:#58a97a;font-style:italic;font-size:11px;text-align:center}
+.chat-head,.chat-input{display:flex;gap:6px;margin-top:8px}
+.status{font-size:11px;color:#58a97a;margin-top:6px}
+.extra{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.dayp{background:#0e2b18;border-radius:10px;padding:10px;font-size:13px}
+.dayp h3{margin:0 0 6px;font-size:13px;color:#00ff9d}
+.dayp li{margin:3px 0}.dayp input{accent-color:#00ff9d}
+.dayp label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.quiz .qa{margin:10px 0}.quiz input{padding:8px;border-radius:6px;border:1px solid #1d4a2c;background:#04120a;color:#c8ffe0;font-size:13px;width:100%}
+.fb{font-size:12.5px;margin-top:4px}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div class="wrap">
+<header>
+  <div class="logo">ТЕ</div>
+  <h1>ТехнолоджиЕГЭ<small>КОД ПОД ЕГЭ · ТВОЙ ТРЕНАЖЁР</small></h1>
+</header>
+<div class="sub">Все 27 заданий ЕГЭ · запуск кода в браузере · план и викторина</div>
+
+<div class="profile">
+  <div class="av" id="myAvatar" title="Сменить аватар" style="cursor:pointer">ТЕ</div>
+  <div>
+    <div class="who">Prohor</div>
+    <div style="font-size:11px;color:#58a97a;">мой личный тренажёр</div>
+  </div>
+  <div class="scores">
+    <div><b id="scoreMe">0</b><span>· решено</span></div>
+  </div>
+</div>
+<div class="avaPick" id="avaPick" style="display:none;margin-bottom:8px">
+  <button class="btn" data-a="🚀">🚀</button><button class="btn" data-a="👨‍💻">👨‍💻</button><button class="btn" data-a="🛩️">🛩️</button><button class="btn" data-a="✈️">✈️</button>
+  <button class="btn" data-a="🦅">🦅</button><button class="btn" data-a="🐺">🐺</button><button class="btn" data-a="⚡">⚡</button><button class="btn" data-a="🔥">🔥</button>
+  <button class="btn" data-a="⭐">⭐</button><button class="btn" data-a="💜">💜</button><button class="btn" data-a="🌙">🌙</button><button class="btn" data-a="🍀">🍀</button>
+  <button class="btn" id="avaPhoto">📷 Фото</button>
+  <button class="btn" id="avaCancel">Отмена</button>
+</div>
+
+<div class="grid">
+  <div>
+    <div class="card">
+      <h2>Задание и код</h2>
+      <select class="task" id="taskSel"></select>
+      <div class="def" id="defBox"></div>
+      <textarea id="code" spellcheck="false"></textarea>
+      <div class="btnrow">
+        <button class="btn primary" id="btnRun">Запустить</button>
+        <button class="btn green" id="btnTest">Проверка</button>
+        <button class="btn" id="btnCopy">Скопировать код</button>
+        <button class="btn" id="btnSolved">Я решил(а) ✓</button>
+      </div>
+      <pre class="out" id="out"></pre>
+      <div class="result" id="result"></div>
+    </div>
+    <div class="info" id="pyStatus">Загрузка Python… (первый раз ~10 сек)</div>
+
+    <div class="extra">
+      <div class="dayp">
+        <h3>📋 План на сегодня (сохраняется)</h3>
+        <ul id="dayList"></ul>
+        <div style="display:flex;gap:6px;margin-top:6px">
+          <input id="dayNew" placeholder="Добавить пункт…" style="flex:1;padding:7px;border-radius:6px;border:1px solid #1d4a2c;background:#04120a;color:#c8ffe0;font-size:12.5px">
+          <button class="btn" id="dayAdd">+</button>
+        </div>
+      </div>
+      <div class="dayp quiz">
+        <h3>⚡ Мини-викторина (10 вопросов)</h3>
+        <div id="quizWrap"></div>
+        <div style="margin-top:8px;font-size:13px"><b id="quizScore">0 / 10</b></div>
+        <button class="btn" id="quizReset" style="margin-top:6px">Заново</button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card chat">
+      <h2>💬 Чат проекта</h2>
+      <div class="chat-head">
+        <input id="chatNick" maxlength="20" placeholder="Твой ник">
+        <input id="chatRoom" maxlength="30" value="techege-public" placeholder="Комната">
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" id="btnConnect" style="flex:1">Включить чат</button>
+      </div>
+      <div class="msgs" id="msgs"><div class="sys">Введи ник и нажми «Включить чат».</div></div>
+      <div class="chat-input">
+        <input id="chatMsg" placeholder="Сообщение…">
+        <button class="btn primary" id="btnSend">➤</button>
+      </div>
+      <div class="status" id="chatStatus">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="info">ТехнолоджиЕГЭ · сделано для Prohor · код работает офлайн · чат через MQTT (нужен интернет).</div>
+</div>
+
+<script src="vendor/mqtt.min.js"></script>
+<script>
+var MODULES = {
+  "1. Кодирование информации": {def:"Задание 1: объём информации.\n\nI = K × i (K — символов, i — бит на символ).\n1 байт = 8 бит, 1 Кбайт = 1024 байта.\nЧасто: I = v × t (бит/с × с).", code:"K = 4096\ni = 16\nbits = K * i\nprint('бит:', bits)\nprint('байт:', bits // 8)\nprint('Кбайт:', bits // 8 // 1024)"},
+  "2. Логика": {def:"Задание 2: логическая функция.\n\nPython: not, and, or.\nЭквивалентность: (a == b). Импликация: (not a or b).\n\nПеребрать наборы 0/1 и сопоставить с таблицей.", code:"def f(x, y, z):\n    return (x or y) and not z\n\nfor x in (0,1):\n  for y in (0,1):\n    for z in (0,1):\n      print(x, y, z, int(f(x,y,z)))"},
+  "3. Базы данных": {def:"Задание 3: фильтрация таблицы.\n\nСписок словарей + условие:\n  [r for r in rows if …]", code:"rows = [\n {'n':'A','gr':1,'m':4},\n {'n':'B','gr':2,'m':5},\n {'n':'C','gr':1,'m':3},\n]\nres = [r for r in rows if r['gr']==1 and r['m']>=4]\nprint(len(res), [r['n'] for r in res])"},
+  "4. Код Фано": {def:"Задание 4: условие Фано.\n\nНи один код не является началом другого → декодирование однозначно.\n\nПроверить: ни один не префикс другого.", code:"codes = ['00','01','100','110']\nok = True\nfor a in codes:\n  for b in codes:\n    if a != b and b.startswith(a):\n      ok = False\nprint('однозначно:', ok)"},
+  "5. Алгоритмы и числа": {def:"Задание 5: преобразование числа, поиск min/max.\n\nbin(n)[2:] — двоичная, int(s,2) — обратно.\n\nПеребор n → алгоритм → условие.", code:"def alg(n):\n    b = bin(n)[2:]\n    if n % 2 == 0: b += '0'\n    else: b += '1'\n    return int(b, 2)\n\nfor n in range(1, 30):\n    if alg(n) > 50:\n        print('n:', n)\n        break"},
+  "6. Исполнитель": {def:"Задание 6: исполнитель (+1, *2).\n\nОбратный ход: от результата к началу: если чётно и можно делить — делим, иначе −1.", code:"def steps_to(k):\n    n = 1\n    steps = 0\n    while n < k:\n        if k % 2 == 0 and k // 2 >= n:\n            k //= 2\n        else:\n            k -= 1\n        steps += 1\n    return steps\nprint(steps_to(21))"},
+  "7. Графика": {def:"Задание 7: объём изображения.\n\nI = W × H × i; N = 2^i (i — бит на пиксель).\n\nБит → байт /8 → Кбайт /1024 → Мбайт /1024.", code:"w, h = 1024, 768\nN = 256\ni = (N-1).bit_length()\nbits = w * h * i\nprint('бит/пикс:', i)\nprint('Мбайт:', round(bits/8/1024/1024, 2))"},
+  "8. Комбинаторика": {def:"Задание 8: кодовые слова.\n\nС повторением: M^L.\nБез повторений: M!/(M−L)!.\n\nitertools: product (с повторением), permutations (без).", code:"import itertools\nM, L = 3, 2\nprint('с повторением:', M**L)\nprint('без повторений:', len(list(itertools.permutations(range(M), L))))"},
+  "9. Передача инфо": {def:"Задание 9: пропускная способность.\n\nI = v × t.\nМбит = 10^6 бит; байт = 8 бит.\n\nНе путай биты и байты!", code:"v = 128_000  # бит/с\nMB = 2\nbits = MB * 1024 * 1024 * 8\nt = bits / v\nprint('сек:', round(t, 1), 'мин:', round(t/60, 2))"},
+  "10. Поиск символа": {def:"Задание 10: сколько раз встречается слово.\n\ns.count(sub), s.lower().\n\nСчитать целиком как слово — через split().", code:"text = 'информатика информационный инфо'\nprint(text.count('информатика'))\nprint(text.split().count('информатика'))"},
+  "11. Палитра": {def:"Задание 11: объём кода с палитрой.\n\nN символов → i = ceil(log2 N) бит = (N−1).bit_length().", code:"N = 33\ni = (N-1).bit_length() if N > 1 else 1\nprint('бит/символ:', i)"},
+  "12. Строки и алгоритм": {def:"Задание 12: правка строки по правилу.\n\nwhile '111' in s: s = s.replace('111','2',1).\n\nЗатем s.count('1').", code:"s = '1' * 20\nwhile '111' in s:\n    s = s.replace('111', '2', 1)\nprint(s)\nprint('единиц:', s.count('1'))"},
+  "13. Кол-во информации": {def:"Задание 13: сколько бит различить N вариантов.\n\ni = ceil(log2 N) = (N−1).bit_length().", code:"import math\nN = 100\nbits = math.ceil(math.log2(N)) if N > 1 else 1\nprint('бит:', bits)"},
+  "14. Системы счисления": {def:"Задание 14: запись числа в другой системе.\n\nbin, oct, hex — встроенные.\nДля произвольного основания — деление с остатком.", code:"def to_base(n, b):\n    d = '0123456789ABCDEF'\n    if n == 0: return '0'\n    s = ''\n    while n:\n        s = d[n % b] + s\n        n //= b\n    return s\nprint(to_base(255, 2))\nprint('единиц:', to_base(255,2).count('1'))"},
+  "15. Множества и логика": {def:"Задание 15: истинность для всех x.\n\nИмпликация A→B = (not A or B).\n\nПеребор A и всех x.", code:"def check(A):\n    for x in range(0, 1000):\n        if not ((x in A) or (x % 2 == 0)):\n            return False\n    return True\n\nfor A in range(1, 2000):\n    if check(set(range(1, A+1))):\n        print('A:', A)\n        break"},
+  "16. Рекурсия": {def:"Задание 16: рекурсивная функция F(n).\n\nПиши функцию с условиями задачи. База: n=1. Дальше по веткам.", code:"def F(n):\n    if n == 1: return 1\n    if n % 2 == 0: return F(n//2) + 1\n    return F(3*n + 1) + 1\n\nprint('F(27) =', F(27))"},
+  "17. Пары элементов": {def:"Задание 17: последовательность из файла.\n\nДанные — списком (файл в браузере недоступен).\n\nКол-во кратных + максимум/сумма.", code:"data = [12, 15, 20, 25, 30]\nk, mx = 0, -10**9\nfor n in data:\n    if n % 5 == 0:\n        k += 1\n        mx = max(mx, n)\nprint(k, mx)"},
+  "18. Теория игр": {def:"Задание 18: выигрышная стратегия.\n\nПозиция — камни, ходы (+1, *2).\n\nВыигрышная, если есть ход в проигрышную.", code:"def win(n):\n    if n >= 30: return False\n    return not win(n+1) or not win(n*2)\n\nfor n in range(1, 30):\n    print(n, 'В' if win(n) else 'П')"},
+  "19. Игра: мин ход": {def:"Задание 19: выигрышная позиция, минимальный ход.\n\nИщем позиции win(n) с ходом в not win.", code:"def win(n):\n    if n >= 30: return False\n    return not win(n+1) or not win(n*2)\n\nfor n in range(1, 30):\n    if win(n):\n        moves = [c for c in (n+1, n*2) if not win(c)]\n        if moves:\n            print(n, '->', min(moves))\n            break"},
+  "20. Игра: два хода": {def:"Задание 20: выигрыш за 2 хода.\n\nwin1 — первым ходом; win2 — при любом ходе противника.", code:"LIM = 30\ndef win1(n):\n    if n >= LIM: return False\n    return any(not win1(c) for c in (n+1, n*2))\ndef win2(n):\n    if n >= LIM: return False\n    return all(win1(c) for c in (n+1, n*2))\n\nfor n in range(1, LIM):\n    if win2(n) and not win1(n):\n        print(n)\n        break"},
+  "21. Игра: анализ": {def:"Задание 21: выигрыш на K-м ходу.\n\nУровни win1…winK через глубину.", code:"LIM = 30\ndef win(n, d):\n    if n >= LIM: return d % 2 == 0\n    if d == 0: return False\n    return any(not win(c, d-1) for c in (n+1, n*2))\n\nfor n in range(1, LIM):\n    if win(n, 2) and not win(n, 1):\n        print(n)\n        break"},
+  "22. Моделирование": {def:"Задание 22: таблица входа/выхода.\n\nСписок словарей + max по разнице.", code:"rows = [\n {'id':1,'in':10,'out':20},\n {'id':2,'in':15,'out':25},\n {'id':3,'in':5,'out':30},\n]\nbest = max(rows, key=lambda r: r['out']-r['in'])\nprint(best['id'], best['out']-best['in'])"},
+  "23. Программы": {def:"Задание 23: сколько программ A→B (+1, *2).\n\nРекурсия с lru_cache.", code:"from functools import lru_cache\n@lru_cache(None)\ndef w(n):\n    if n == 10: return 1\n    if n > 10: return 0\n    return w(n+1) + w(n*2)\nprint(w(1))"},
+  "24. Макс подряд": {def:"Задание 24: макс. длина серии символа.\n\nОдин проход: cur, maxlen.", code:"s = 'XXXYYXXYYYXXXX'\ncur = mx = 0\nfor ch in s:\n    if ch == 'X':\n        cur += 1\n        mx = max(mx, cur)\n    else:\n        cur = 0\nprint(mx)"},
+  "25. Делители": {def:"Задание 25: поиск чисел по делителям.\n\nДелители парой до √n.\n\nИщем с нужным кол-вом делителей.", code:"import math\ndef divs(n):\n    ds = set()\n    for d in range(1, int(math.isqrt(n))+1):\n        if n % d == 0:\n            ds.update({d, n//d})\n    return sorted(ds)\n\nfor n in range(10, 100):\n    if len(divs(n)) == 6:\n        print(n, divs(n))\n        break"},
+  "26. Обработка данных": {def:"Задание 26: файл с числами.\n\nСортировка, подсчёт, max/min.\n\nДанные — списком.", code:"data = [5, 3, 9, 1, 7, 3, 8]\ndata.sort()\nprint('max:', max(data))\nprint('sum:', sum(data))\nprint('среднее:', round(sum(data)/len(data), 2))"},
+  "27. Массивы": {def:"Задание 27: последовательность с условием.\n\nДля больших данных — один проход.\n\nПример: пара с суммой, делящейся на K.", code:"A = [3, 8, 14, 11, 2]\nK = 5\nbest, pair = -1, None\nfor i in range(len(A)):\n    for j in range(i+1, len(A)):\n        if (A[i]+A[j]) % K == 0 and A[i]+A[j] > best:\n            best = A[i]+A[j]\n            pair = (A[i], A[j])\nprint(pair, best)"}
+};
+var QUIZ = [
+  {q:"Сколько байт в 1 Кбайт?",a:"1024",r:"1 Кбайт = 1024 байта = 8192 бит."},
+  {q:"Сколько бит занимает 1 символ в ASCII?",a:"8",r:"ASCII — 8 бит (1 байт)."},
+  {q:"Что такое условие Фано?",a:"код не префикс",r:"Ни один код не является началом другого."},
+  {q:"2^10 = ?",a:"1024",r:"2^10 = 1024."},
+  {q:"Сколько цветов при 8 бит/пиксель?",a:"256",r:"N = 2^i = 2^8 = 256."},
+  {q:"Импликация A→B в Python — это…",a:"not a or b",r:"A→B = (not A or B)."},
+  {q:"Сколько байт в 1 Мбайт?",a:"1048576",r:"1 Мбайт = 1024 Кбайт = 1 048 576 байт."},
+  {q:"Как получить двоичную запись числа в Python?",a:"bin(n)",r:"bin(5) = '0b101'."},
+  {q:"Сколько бит различить 16 вариантов?",a:"4",r:"ceil(log2 16) = 4."},
+  {q:"Каким методом посчитать вхождения подстроки?",a:"count",r:"s.count('ab')."},
+  {q:"Буквы могут повторяться, длина L из M букв — сколько слов?",a:"m*l",r:"M^L."},
+  {q:"1 Мбит = ? бит",a:"1000000",r:"Мбит — 10^6 бит (не 1024²)."},
+  {q:"Как перевести число из 2-й в 10-ю систему?",a:"int(s,2)",r:"int('101', 2) = 5."},
+  {q:"Сколько делителей у числа 36?",a:"9",r:"36 = 2²·3² → (2+1)(2+1) = 9."},
+  {q:"Что делает lru_cache в рекурсии?",a:"кэширует",r:"Запоминает результаты — ускоряет."}
+];
+var MY = "Prohor";
+var MY_AVA = "👨‍💻";
+var ROOMD = "techege-public";
+var ANIM = "matrix";
+
+/* ---- фоновая анимация ---- */
+(function(){
+  var bg=document.getElementById('bg');
+  if(ANIM==='starfield'){
+    for(var i=0;i<90;i++){var d=document.createElement('div');d.className='star';
+      d.style.left=Math.random()*100+'%';d.style.top=Math.random()*100+'%';
+      d.style.width=d.style.height=(Math.random()*2.5+0.5)+'px';
+      d.style.animationDelay=(Math.random()*3)+'s';bg.appendChild(d);}
+  } else if(ANIM==='matrix'){
+    var chars='01アイウエオカキクケコサシスセソタチツテト0123456789<>/\|_+*#$%&';
+    for(var m=0;m<40;m++){
+      var col=document.createElement('div');
+      col.style.position='absolute';
+      col.style.top='-10%';
+      col.style.left=(Math.random()*100)+'%';
+      col.style.fontFamily='Consolas,monospace';
+      col.style.fontSize=(Math.random()*14+10)+'px';
+      col.style.color='#00ff9d';
+      col.style.whiteSpace='nowrap';
+      col.style.opacity=Math.random()*0.7+0.3;
+      var text='';
+      var len=Math.floor(Math.random()*18+6);
+      for(var ci=0;ci<len;ci++){text+=chars.charAt(Math.floor(Math.random()*chars.length));}
+      col.textContent=text;
+      col.style.animation='drop '+(Math.random()*7+5)+'s linear infinite';
+      col.style.animationDelay=(Math.random()*8)+'s';
+      bg.appendChild(col);
+    }
+  } else {
+    for(var j=0;j<18;j++){var b=document.createElement('div');b.className='bubble';
+      b.style.left=Math.random()*100+'%';b.style.width=b.style.height=(Math.random()*40+10)+'px';
+      b.style.background='#ff9ad5';b.style.animationDuration=(Math.random()*9+8)+'s';
+      b.style.animationDelay=(Math.random()*8)+'s';bg.appendChild(b);}
+  }
+})();
+
+/* ---- редактор + Pyodide ---- */
+var selected=Object.keys(MODULES)[0], py=null;
+function loadPy(){
+  return new Promise(function(res,rej){
+    var s=document.createElement('script');s.src='pyodide/pyodide.js';
+    s.onload=function(){ if(window.loadPyodide){window.loadPyodide({indexURL:'pyodide/'}).then(res).catch(rej);} else rej(new Error('no loadPyodide')); };
+    s.onerror=function(){var s2=document.createElement('script');s2.src='https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';
+      s2.onload=function(){window.loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'}).then(res).catch(rej);};
+      s2.onerror=function(){rej(new Error('нет интернета и локальных файлов'));};document.head.appendChild(s2);};
+    document.head.appendChild(s);
+  });
+}
+function fillSel(){var sel=document.getElementById('taskSel');sel.innerHTML='';
+  Object.keys(MODULES).forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=k;sel.appendChild(o);});sel.value=selected;}
+function showMod(){var m=MODULES[selected];document.getElementById('defBox').textContent=m.def;
+  document.getElementById('code').value=m.code;document.getElementById('out').style.display='none';document.getElementById('result').innerHTML='';}
+document.getElementById('taskSel').onchange=function(){selected=this.value;showMod();};
+document.getElementById('btnRun').onclick=function(){var out=document.getElementById('out');out.style.display='block';out.className='out';out.textContent='';
+  if(!py){out.textContent='Python ещё грузится…';return;}
+  try{py.setStdout({batched:function(s){out.textContent+=s+'\n';}});py.runPython(document.getElementById('code').value);}
+  catch(e){out.className='out err';out.textContent=(e&&e.message)||String(e);}};
+document.getElementById('btnTest').onclick=function(){var r=document.getElementById('result');
+  if(!py){r.innerHTML='<span class="bad">Python грузится…</span>';return;}
+  try{py.setStdout({batched:function(){}});py.runPython(document.getElementById('code').value);
+    r.innerHTML='<span class="ok">Код без ошибок. Отлично!</span>';}
+  catch(e){r.innerHTML='<span class="bad">Ошибка: '+(e.message||e)+'</span>';}};
+document.getElementById('btnCopy').onclick=function(){var c=document.getElementById('code').value;
+  function done(){alert('Код скопирован.');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(c).then(done).catch(function(){fb(c);done();});}else{fb(c);done();}};
+function fb(t){var x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(x);}
+document.getElementById('btnSolved').onclick=function(){addScore(1);};
+
+/* ---- счёт ---- */
+var score=parseInt(localStorage.getItem('phScore_'+ROOMD)||'0');
+function showScores(){document.getElementById('scoreMe').textContent=score;}
+function addScore(n){score+=n;localStorage.setItem('phScore_'+ROOMD,String(score));showScores();}
+
+/* ---- план дня ---- */
+var plan=JSON.parse(localStorage.getItem('phPlan_'+ROOMD)||'[]');
+function renderPlan(){var ul=document.getElementById('dayList');ul.innerHTML='';
+  plan.forEach(function(p,i){var li=document.createElement('li');
+    var lb=document.createElement('label');
+    var ch=document.createElement('input');ch.type='checkbox';ch.checked=p.done;
+    ch.onchange=function(){plan[i].done=ch.checked;savePlan();renderPlan();};
+    var sp=document.createElement('span');sp.textContent=p.text;if(p.done)sp.style.textDecoration='line-through';
+    lb.appendChild(ch);lb.appendChild(sp);li.appendChild(lb);ul.appendChild(li);});}
+function savePlan(){localStorage.setItem('phPlan_'+ROOMD,JSON.stringify(plan));}
+document.getElementById('dayAdd').onclick=function(){var inp=document.getElementById('dayNew');var v=inp.value.trim();
+  if(!v)return;plan.push({text:v,done:false});inp.value='';savePlan();renderPlan();};
+
+/* ---- викторина ---- */
+var qs=QUIZ.slice(0,10) , answers=JSON.parse(localStorage.getItem('phQuiz_'+ROOMD)||'[]');
+function renderQuiz(){var w=document.getElementById('quizWrap');w.innerHTML='';
+  qs.forEach(function(q,i){var d=document.createElement('div');d.className='qa';
+    var l=document.createElement('div');l.textContent=(i+1)+'. '+q.q;
+    var inp=document.createElement('input');inp.placeholder='Ответ';
+    if(answers[i]){inp.value=answers[i];inp.disabled=true;}
+    inp.onchange=function(){answers[i]=inp.value.trim();localStorage.setItem('phQuiz_'+ROOMD,JSON.stringify(answers));
+      var ok=answers[i]&&answers[i].toLowerCase()===q.a.toLowerCase();
+      if(ok){var fb=document.createElement('div');fb.className='fb ok';fb.textContent='✓ '+q.r;d.appendChild(fb);renderQuiz();}};
+    d.appendChild(l);d.appendChild(inp);w.appendChild(d);});
+  var c=answers.filter(function(a,i){return a&&a.toLowerCase()===qs[i].a.toLowerCase();}).length;
+  document.getElementById('quizScore').textContent=c+' / 10';}
+document.getElementById('quizReset').onclick=function(){answers=[];localStorage.setItem('phQuiz_'+ROOMD,'[]');renderQuiz();};
+
+/* ---- чат MQTT ---- */
+var client=null, connected=false;
+var nick=localStorage.getItem('phNick')||MY;
+var room=localStorage.getItem('phRoom')||ROOMD;
+document.getElementById('chatNick').value=nick;
+document.getElementById('chatRoom').value=room;
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ---- аватарки ---- */
+var myAva=localStorage.getItem('phAva_'+ROOMD)||MY_AVA;
+function renderMyAva(){var el=document.getElementById('myAvatar');
+  if(myAva&&myAva.indexOf('data:')===0){el.textContent='';el.innerHTML='<img class="avimg" src="'+myAva+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';}
+  else{el.innerHTML='';el.textContent=myAva||MY_AVA;}}
+function setMyAva(a){myAva=a;localStorage.setItem('phAva_'+ROOMD,a);renderMyAva();}
+document.getElementById('myAvatar').onclick=function(){
+  var p=document.getElementById('avaPick');p.style.display=p.style.display==='none'?'block':'none';};
+document.querySelectorAll('#avaPick button[data-a]').forEach(function(b){
+  b.onclick=function(){setMyAva(this.getAttribute('data-a'));document.getElementById('avaPick').style.display='none';};});
+document.getElementById('avaCancel').onclick=function(){document.getElementById('avaPick').style.display='none';};
+document.getElementById('avaPhoto').onclick=function(){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=function(){var f=inp.files[0];if(!f)return;
+    var rd=new FileReader();rd.onload=function(){setMyAva(rd.result);document.getElementById('avaPick').style.display='none';};
+    rd.readAsDataURL(f);};
+  inp.click();};
+
+function addMsg(who,text,mine,when){var box=document.getElementById('msgs');var d=document.createElement('div');
+  d.className='msg'+(mine?' mine':'');var t=when||new Date().toTimeString().slice(0,5);
+  d.innerHTML='<span class="who">'+esc(who)+'</span> <span style="color:#58a97a;font-size:10px">'+t+'</span><br>'+esc(text).replace(/\n/g,'<br>');
+  box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function sysMsg(text){var box=document.getElementById('msgs');var d=document.createElement('div');d.className='sys';d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;}
+var histKey='phHist_'+room;
+function saveHist(m){var a=JSON.parse(localStorage.getItem(histKey)||'[]');a.push(m);if(a.length>120)a=a.slice(-120);localStorage.setItem(histKey,JSON.stringify(a));}
+function loadHist(){var a=JSON.parse(localStorage.getItem(histKey)||'[]');a.forEach(function(m){addMsg(m.who,m.text,m.who===nick,m.when);});}
+
+function connectChat(){
+  nick=(document.getElementById('chatNick').value.trim()||MY);
+  room=(document.getElementById('chatRoom').value.trim()||ROOMD);
+  localStorage.setItem('phNick',nick);localStorage.setItem('phRoom',room);
+  histKey='phHist_'+room;
+  try{client=mqtt.connect('wss://broker.emqx.io:8084/mqtt',{clientId:'ph_'+Math.random().toString(16).slice(2,10),connectTimeout:8000,reconnectPeriod:5000});}
+  catch(e){document.getElementById('chatStatus').textContent='MQTT не поддерживается: '+e.message;return;}
+  client.on('connect',function(){
+    connected=true;
+    client.subscribe('ph/'+room+'/chat',{qos:0});
+    document.getElementById('chatStatus').textContent='Чат онлайн: '+nick+' @ '+room;
+    loadHist();
+  });
+  client.on('message',function(topic,payload){
+    try{
+      var m=JSON.parse(payload.toString());
+      if(m.t==='chat'){addMsg(m.who,m.text,m.who===nick,m.when);saveHist(m);}
+    }catch(e){}
+  });
+  client.on('close',function(){connected=false;
+    document.getElementById('chatStatus').textContent='Чат отключён (нет интернета?).';});
+  client.on('error',function(e){document.getElementById('chatStatus').textContent='Ошибка чата: '+(e.message||e);});
+}
+function sendMsg(){var inp=document.getElementById('chatMsg');var txt=inp.value.trim();if(!txt)return;
+  if(!connected||!client){document.getElementById('chatStatus').textContent='Чат не включён — нажми «Включить чат» (нужен интернет).';return;}
+  var m={t:'chat',who:nick,text:txt,when:new Date().toTimeString().slice(0,5)};
+  client.publish('ph/'+room+'/chat',JSON.stringify(m),{qos:0});
+  addMsg(m.who,m.text,true,m.when);saveHist(m);inp.value='';inp.focus();}
+
+document.getElementById('btnSend').onclick=sendMsg;
+document.getElementById('chatMsg').addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
+document.getElementById('btnConnect').onclick=connectChat;
+document.getElementById('chatRoom').addEventListener('change',connectChat);
+document.getElementById('chatNick').addEventListener('change',function(){nick=this.value.trim()||MY;});
+
+/* ---- старт ---- */
+fillSel();showMod();showScores();renderPlan();renderQuiz();renderMyAva();
+loadPy().then(function(p){py=p;document.getElementById('pyStatus').textContent='Python загружен — можно писать код.';})
+  .catch(function(e){document.getElementById('pyStatus').textContent='Python: '+e.message;});
+</script>
+</body>
+</html>

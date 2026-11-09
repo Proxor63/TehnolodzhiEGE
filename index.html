@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ТехнолоджиЕГЭ — тренажёр по информатике</title>
+<meta name="description" content="ТехнолоджиЕГЭ — интерактивный тренажёр по информатике для подготовки к ЕГЭ: все 27 заданий, запуск Python прямо в браузере.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@4/latin-700.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#051006;color:#c8ffe0;overflow-x:hidden}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+@keyframes drop{0%{transform:translateY(-20%);opacity:0}5%{opacity:.5}100%{transform:translateY(120vh);opacity:.3}}
+.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:32px 18px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#00ff9d,#00d4ff);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#03140b;font-family:Consolas,monospace}
+h1{margin:0;font-size:26px;font-family:Sora,'Segoe UI',sans-serif}
+h1 small{display:block;font-size:12px;color:#58a97a;letter-spacing:2px;font-weight:400}
+.hero{background:#0a1f10;border:1px solid #1d4a2c;border-radius:20px;padding:28px;margin:22px 0;text-align:center}
+.hero h2{margin:0 0 10px;font-size:24px}
+.hero p{margin:0 auto 20px;max-width:560px;color:#9fe0b8;font-size:14.5px;line-height:1.55}
+.btn{display:inline-block;background:linear-gradient(135deg,#00ff9d,#00d4ff);color:#03140b;font-weight:700;padding:14px 26px;border-radius:12px;text-decoration:none;font-size:16px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,255,157,.25)}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:26px 0}
+.feat{background:#0a1f10;border:1px solid #1d4a2c;border-radius:16px;padding:18px}
+.feat b{display:block;font-size:17px;margin-bottom:6px;color:#d6ffe9}
+.feat span{font-size:13px;color:#7dbf99;line-height:1.5}
+.info{color:#58a97a;font-size:12px;margin-top:26px;text-align:center}
+.code-block{background:#04120a;border:1px solid #1d4a2c;border-radius:12px;padding:16px;font-family:Consolas,monospace;font-size:13px;color:#8ff;overflow-x:auto;margin:18px 0;text-align:left}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div class="wrap">
+  <header>
+    <div class="logo">ТЕ</div>
+    <h1>ТехнолоджиЕГЭ<small>ИНТЕРАКТИВНЫЙ ТРЕНАЖЁР ПО ИНФОРМАТИКЕ</small></h1>
+  </header>
+
+  <div class="hero">
+    <h2>Готовься к ЕГЭ по информатике с кодом</h2>
+    <p>Все 27 заданий, теория и готовые решения на Python. Запускай код прямо в браузере, проверяй себя, веди план подготовки и решай мини-викторины. Бесплатно, без установки.</p>
+    <a class="btn" href="Prohor.html">Открыть тренажёр →</a>
+  </div>
+
+  <div class="code-block">
+<span style="color:#58a97a"># Пример: задание 12 — строки.</span>
+s = <span style="color:#ffd479">'1'</span> * 20
+<span style="color:#7ddb9b">while</span> <span style="color:#ffd479">'111'</span> <span style="color:#7ddb9b">in</span> s:
+    s = s.replace(<span style="color:#ffd479">'111'</span>, <span style="color:#ffd479">'2'</span>, <span style="color:#ff9c9c">1</span>)
+print(s.count(<span style="color:#ffd479">'1'</span>))  <span style="color:#58a97a"># 8</span>
+  </div>
+
+  <div class="feats">
+    <div class="feat"><b>⚡ Python в браузере</b><span>Пиши и запускай код на Python без установки — прямо на странице.</span></div>
+    <div class="feat"><b>📚 Все 27 заданий</b><span>От кодирования до олимпиадных задач — теория и готовые решения.</span></div>
+    <div class="feat"><b>📋 План и викторина</b><span>Веди план на день, отмечай решённое, проверяй себя в мини-викторине.</span></div>
+    <div class="feat"><b>💬 Чат проекта</b><span>Общайся с другими, кто готовится — чат по комнате (нужен интернет).</span></div>
+  </div>
+
+  <div class="info">ТехнолоджиЕГЭ · сделано с заботой о тех, кто сдаёт ЕГЭ · код работает офлайн · чат через MQTT</div>
+</div>
+<script>
+(function(){var bg=document.getElementById('bg');var chars='01アイウエオカキクケコサシスセソタチツテト0123456789<>/\\|_+*#$%&';
+for(var m=0;m<30;m++){var col=document.createElement('div');col.style.position='absolute';col.style.top='-10%';
+col.style.left=(Math.random()*100)+'%';col.style.fontFamily='Consolas,monospace';
+col.style.fontSize=(Math.random()*14+10)+'px';col.style.color='#00ff9d';col.style.whiteSpace='nowrap';
+col.style.opacity=Math.random()*0.5+0.2;var text='';var len=Math.floor(Math.random()*18+6);
+for(var ci=0;ci<len;ci++){text+=chars.charAt(Math.floor(Math.random()*chars.length));}
+col.textContent=text;col.style.animation='drop '+(Math.random()*7+5)+'s linear infinite';
+col.style.animationDelay=(Math.random()*8)+'s';bg.appendChild(col);}})();
+</script>
+</body>
+</html>
