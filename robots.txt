@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /vendor/
+Disallow: /pyodide/
+
+Sitemap: https://proxor63.github.io/TehnolodzhiEGE/sitemap.xml
